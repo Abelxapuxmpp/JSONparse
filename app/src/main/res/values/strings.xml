@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">JSONparse</string>
+
+    <string name="clave">Clave: </string>
+    <string name="clave2">Dato1 </string>
+    <string name="fecha">Fecha: </string>
+    <string name="fecha2">Dato2 </string>
+    <string name="nombre">Nombre: </string>
+    <string name="nombre2">Dato3 </string>
+    <string name="area">Area: </string>
+    <string name="area2">Dato4 </string>
+    <string name="descripcion">Descripcion: </string>
+    <string name="descripcion2">Dato5 </string>
+    <string name="recibido">Recibido: </string>
+    <string name="recibido2">Dato6 </string>
+    <string name="entregado">Entregado: </string>
+    <string name="entregado2">Dato7 </string>
+    <string name="title_activity_lista_prestamos">lista_prestamos</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_individual_prestamo">individual_prestamo</string>
+
+    <string name="hello_world">Hello world!</string>
+</resources>
