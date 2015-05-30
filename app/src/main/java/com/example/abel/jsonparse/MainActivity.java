@@ -28,13 +28,15 @@ public class MainActivity extends ListActivity {
 
     private ProgressDialog pDialog;
 
-    // URL to get contacts JSON
+    //URL del archivo json guardado en un servidor en linea
     private static String url = "http://iin8.szhernandez.dx.am/aabbcc.json";
 
 
-    // JSON Node names
-    private final String KEY_TAG = "prestamos"; // parent node
-    private final String KEY_CLAVE = "clave_prestamo"; // parent node
+    // Nodos de json que se igualan a los de la base de datos
+
+    // Nodo padre
+    private final String KEY_TAG = "prestamos";
+    private final String KEY_CLAVE = "clave_prestamo";
     private final String KEY_FECHA = "fecha";
     private final String KEY_NOMBRE = "nombre_sol";
     private final String KEY_AREA = "area_sol";
@@ -42,10 +44,10 @@ public class MainActivity extends ListActivity {
     private final String KEY_RECIBIDO = "recibido";
     private final String KEY_ENTREGADO = "entregado";
 
-    // contacts JSONArray
+    // llamada al arreglo de la tabla prestamos
     JSONArray prestamos = null;
 
-    // Hashmap for ListView
+    // Arreglo guardado en en ListView
     ArrayList<HashMap<String, String>> prestamosList;
 
     @Override
@@ -53,15 +55,19 @@ public class MainActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Arreglo de la lista de prestamos
         prestamosList = new ArrayList<HashMap<String, String>>();
 
         ListView lv = getListView();
 
+        //Evento que detecta el elemento del ListView que es presionado
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // getting values from selected ListItem
+
+                //Declaracion de variables para cada dato de cada elemento del ListView
                 String clv = ((TextView) view.findViewById(R.id.clave2_2)).getText().toString();
                 String fec = ((TextView) view.findViewById(R.id.fecha2_2)).getText().toString();
                 String nom = ((TextView) view.findViewById(R.id.nombre2_2)).getText().toString();
@@ -70,7 +76,7 @@ public class MainActivity extends ListActivity {
                 String rec = ((TextView) view.findViewById(R.id.recibido2_2)).getText().toString();
                 String ent = ((TextView) view.findViewById(R.id.entregado2_2)).getText().toString();
 
-                // Starting new intent
+                // Evento para almacenar los datos a enviar a la segunda actividad en un putExtra
                 Intent in = new Intent(getApplicationContext(), individual_prestamo.class);
                 in.putExtra(KEY_CLAVE, clv);
                 in.putExtra(KEY_FECHA, fec);
@@ -79,6 +85,8 @@ public class MainActivity extends ListActivity {
                 in.putExtra(KEY_DESCRIPCION, des);
                 in.putExtra(KEY_RECIBIDO, rec);
                 in.putExtra(KEY_ENTREGADO, ent);
+
+                //Inicio de la actividad
                 startActivity(in);
 
             }
@@ -88,8 +96,8 @@ public class MainActivity extends ListActivity {
         new GetContacts().execute();
     }
 
+    //Metodo para mostrar la carga del archivo y sus elementos
     private class GetContacts extends AsyncTask<Void, Void, Void> {
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -103,26 +111,26 @@ public class MainActivity extends ListActivity {
 
         @Override
         protected Void doInBackground(Void... arg0) {
-            // Creating service handler class instance
+            // Creando instancia del servicio Handler
             ServiceHandler sh = new ServiceHandler();
 
-            // Making a request to url and getting response
             String jsonStr = sh.makeServiceCall(url, ServiceHandler.GET);
 
             Log.d("Response: ", "> " + jsonStr);
 
+            //Identifica si la llamada del archivo URL es nulo o no
             if (jsonStr != null) {
                 try {
                     JSONObject jsonObj = new JSONObject(jsonStr);
 
-                    // Getting JSON Array node
+                    //Obteniendo arreglo del archivo JSON
                     prestamos = jsonObj.getJSONArray(KEY_TAG);
 
-                    // looping through All Contacts
+                    //Obteniendo la informacion de todos los contactos mediante un contador
                     for (int i = 0; i < prestamos.length(); i++) {
                         JSONObject c = prestamos.getJSONObject(i);
 
-                        // Phone node is JSON Object
+                        //Llamda de los nodos de la base de datos prestamos
                         String clv = c.getString(KEY_CLAVE);
                         String fec = c.getString(KEY_FECHA);
                         String nom = c.getString(KEY_NOMBRE);
@@ -131,10 +139,9 @@ public class MainActivity extends ListActivity {
                         String rec = c.getString(KEY_RECIBIDO);
                         String ent = c.getString(KEY_ENTREGADO);
 
-                        // tmp hashmap for single contact
                         HashMap<String, String> prt = new HashMap<String, String>();
 
-                        // adding each child node to HashMap key => value
+                        //Igualando nodos con las variables que los almacenaran
                         prt.put(KEY_CLAVE, clv);
                         prt.put(KEY_FECHA, fec);
                         prt.put(KEY_NOMBRE, nom);
@@ -143,7 +150,7 @@ public class MainActivity extends ListActivity {
                         prt.put(KEY_RECIBIDO, rec);
                         prt.put(KEY_ENTREGADO, ent);
 
-                        // adding contact to contact list
+                        // Agregando cada contacto a una lista
                         prestamosList.add(prt);
                     }
                 } catch (JSONException e) {
@@ -159,14 +166,13 @@ public class MainActivity extends ListActivity {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            // Dismiss the progress dialog
             if (pDialog.isShowing())
                 pDialog.dismiss();
+            //Adaptador que muestra la ListView con su elemento de la vista correspondiente
             ListAdapter adapter = new SimpleAdapter(
                     MainActivity.this, prestamosList,
                     R.layout.list_prestamo, new String[] { KEY_CLAVE, KEY_FECHA,KEY_NOMBRE, KEY_AREA, KEY_DESCRIPCION, KEY_RECIBIDO, KEY_ENTREGADO}, new int[] { R.id.clave2_2,
                     R.id.fecha2_2, R.id.nombre2_2, R.id.area2_2, R.id.descripcion2_2, R.id.recibido2_2, R.id.entregado2_2 });
-
             setListAdapter(adapter);
         }
     }
